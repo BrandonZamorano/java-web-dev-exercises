@@ -1,0 +1,11 @@
+Menu
+---
+has several menu items
+
+MenuItem
+---
+price
+description
+category
+
+whether it is new or not
