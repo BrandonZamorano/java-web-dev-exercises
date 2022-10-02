@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 public class Menu {
 //    private List<MenuItem> menuItems;
-    private Map<String, List<MenuItem>> menuItems;
+    private Map<String, Map<String, MenuItem>> menuItems;
     private Date dateCreated;
     private Date lastUpdated;
 
@@ -17,18 +17,8 @@ public class Menu {
     }
 
     public void addMenuItem(MenuItem menuItem) {
-        this.menuItems.putIfAbsent(menuItem.getCategory(), new ArrayList<>());
-
-        // Get current menu item list
-        List<MenuItem> menuItemList = this.menuItems.get(menuItem.getCategory());
-
-        // Add menu item
-        if (menuItemList.contains(menuItem)) {
-            return;
-        }
-
-        menuItemList.add(menuItem);
-
+        this.menuItems.putIfAbsent(menuItem.getCategory(), new HashMap<>());
+        this.menuItems.getOrDefault(menuItem.getCategory(), new HashMap<>()).putIfAbsent(menuItem.getDescription(), menuItem);
         // Record date updated
         this.recordDateUpdated();
     }
@@ -39,7 +29,7 @@ public class Menu {
 
     public void removeMenuItem(MenuItem menuItem) {
         // Remove menu item
-        this.menuItems.getOrDefault(menuItem.getCategory(), new ArrayList<>()).remove(menuItem);
+        this.menuItems.getOrDefault(menuItem.getCategory(), new HashMap<>()).remove(menuItem.getDescription());
 
         // Record date updated
         this.recordDateUpdated();
@@ -49,6 +39,7 @@ public class Menu {
         // Define what it means to be new.
         final int MAX_DAYS_BETWEEN = 5;
         long daysBetween = Duration.between(this.lastUpdated.toInstant(), menuItem.getDateCreated().toInstant()).toDays();
+        System.out.println(daysBetween);
 
         return daysBetween <= MAX_DAYS_BETWEEN;
     }
@@ -59,12 +50,14 @@ public class Menu {
 
     public List<MenuItem> getMenuItems() {
         return this.menuItems.values().stream()
+                .map(m -> m.values())
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
+
     }
 
     public List<MenuItem> getMenuItems(String category) {
-        return this.menuItems.getOrDefault(category, new ArrayList<>()).stream()
+        return this.menuItems.getOrDefault(category, new HashMap<>()).values().stream()
                 .collect(Collectors.toList());
 
     }
