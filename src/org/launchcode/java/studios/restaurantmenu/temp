@@ -1,11 +1,23 @@
 Menu
 ---
 has several menu items
+dateLastUpdated
+
+addMenuItem
+removeMenuItem
+isMenuItemNew
+getDateLastUpdated
+
+toString
 
 MenuItem
 ---
 price
 description
 category
+dateCreated
 
 whether it is new or not
+
+toString
+equals
